@@ -644,3 +644,68 @@ async def remove_banned_user(user_id: int):
     if not is_gbanned:
         return
     return await blockeddb.delete_one({"user_id": user_id})
+
+
+async def save_filter(chat_id: int, name: str, _filter: dict):
+    name = name.lower().strip()
+    _filters = await _get_filters(chat_id)
+    _filters[name] = _filter
+    await filtersdb.update_one(
+        {"chat_id": chat_id},
+        {"$set": {"filters": _filters}},
+        upsert=True,
+    )
+
+
+async def save_filter(chat_id: int, name: str, _filter: dict):
+    name = name.lower().strip()
+    _filters = await _get_filters(chat_id)
+    _filters[name] = _filter
+    await filtersdb.update_one(
+        {"chat_id": chat_id},
+        {"$set": {"filters": _filters}},
+        upsert=True,
+    )
+
+
+async def delete_note(chat_id: int, name: str) -> bool:
+    notesd = await _get_notes(chat_id)
+    name = name.lower().strip()
+    if name in notesd:
+        del notesd[name]
+        await notesdb.update_one(
+            {"chat_id": chat_id},
+            {"$set": {"notes": notesd}},
+            upsert=True,
+        )
+        return True
+    return False
+
+
+async def deleteall_notes(chat_id: int):
+    return await notesdb.delete_one({"chat_id": chat_id})
+
+
+async def get_note(chat_id: int, name: str) -> Union[bool, dict]:
+    name = name.lower().strip()
+    _notes = await _get_notes(chat_id)
+    if name in _notes:
+        return _notes[name]
+    return False
+
+
+async def get_note_names(chat_id: int) -> List[str]:
+    _notes = []
+    for note in await _get_notes(chat_id):
+        _notes.append(note)
+    return _notes
+
+
+async def save_note(chat_id: int, name: str, note: dict):
+    name = name.lower().strip()
+    _notes = await _get_notes(chat_id)
+    _notes[name] = note
+
+    await notesdb.update_one(
+        {"chat_id": chat_id}, {"$set": {"notes": _notes}}, upsert=True
+    )
