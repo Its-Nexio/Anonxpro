@@ -3,7 +3,8 @@ from pyrogram import filters
 from pyrogram.types import Message,InlineKeyboardButton,InlineKeyboardMarkup
 from pyrogram.enums import ChatAction
 from AnonXMusic import app
-from config import BOT_USERNAME
+
+BOT_USERNAME = "HIMANSHI_MUSIC_BOT"
 
 NYKAA = [
     [
