@@ -24,6 +24,26 @@ from AnonXMusic.utils.inline import help_pannel, private_panel, start_panel
 from config import BANNED_USERS
 from strings import get_string
 
+STICKER = [
+    "CAACAgUAAxkBAAIGumdtd4YUFHodIuCPdYhd3OWByPBJAAKVBQACCjupVA-F5gk3MLJkHgQ",
+    "CAACAgUAAxkBAAIGumdtd4YUFHodIuCPdYhd3OWByPBJAAKVBQACCjupVA-F5gk3MLJkHgQ",
+    "CAACAgUAAxkBAAIGumdtd4YUFHodIuCPdYhd3OWByPBJAAKVBQACCjupVA-F5gk3MLJkHgQ",
+]
+
+START_IMG_URL = [
+    "https://files.catbox.moe/u7iwi5.jpg",
+    "https://files.catbox.moe/rkskww.jpg",
+    "https://files.catbox.moe/uz810n.jpg",
+    "https://files.catbox.moe/vzl4xb.jpg",
+    "https://files.catbox.moe/j2zdsu.jpg",
+    "https://files.catbox.moe/nlweex.jpg",
+    "https://files.catbox.moe/pp4god.jpg",
+    "https://files.catbox.moe/jslln0.jpg",
+    "https://files.catbox.moe/fqmdff.jpg",
+    "https://files.catbox.moe/eushjw.jpg",
+    "https://files.catbox.moe/39fg3k.jpg",
+]
+
 
 @app.on_message(filters.command(["start"]) & filters.private & ~BANNED_USERS)
 @LanguageStart
@@ -34,13 +54,13 @@ async def start_pm(client, message: Message, _):
         if name[0:4] == "help":
             keyboard = help_pannel(_)
             sticker_msg = await message.reply_sticker(
-                sticker=random.choice(config.STICKER),  # Random sticker from the list
+                sticker=random.choice(STICKER),  # Random sticker from the list
             )
             await asyncio.sleep(0.5)  # the sticker will be deleted after 0.5 seconds
             await sticker_msg.delete()  # sticker deleted
 
             return await message.reply_photo(
-                photo=random.choice(config.START_IMG_URL),
+                photo=random.choice(START_IMG_URL),
                 caption=_["help_1"].format(config.SUPPORT_CHAT),
                 reply_markup=keyboard,
             )
@@ -94,13 +114,13 @@ async def start_pm(client, message: Message, _):
 
         # First start_2 send photo with caption
         sticker_msg = await message.reply_sticker(
-                sticker=random.choice(config.STICKER),  # Random sticker from the list
+                sticker=random.choice(STICKER),  # Random sticker from the list
             )
         await asyncio.sleep(0.5)  # the sticker will be deleted after 0.5 seconds
         await sticker_msg.delete()  # delete the sticker message
 
         await message.reply_photo(
-            photo=random.choice(config.START_IMG_URL),
+            photo=random.choice(START_IMG_URL),
             caption=_["start_2"].format(message.from_user.mention),  # Pehla caption (start_2)
         )
 
@@ -124,7 +144,7 @@ async def start_gp(client, message: Message, _):
     out = start_panel(_)
     uptime = int(time.time() - _boot_)
     await message.reply_photo(
-        photo=random.choice(config.START_IMG_URL),
+        photo=random.choice(START_IMG_URL),
         caption=_["start_1"].format(app.mention, get_readable_time(uptime)),
         reply_markup=InlineKeyboardMarkup(out),
     )
@@ -159,7 +179,7 @@ async def welcome(client, message: Message):
 
                 out = start_panel(_)
                 await message.reply_photo(
-                    photo=random.choice(config.START_IMG_URL),
+                    photo=random.choice(START_IMG_URL),
                     caption=_["start_4"].format(
                         message.from_user.first_name,
                         app.mention,
