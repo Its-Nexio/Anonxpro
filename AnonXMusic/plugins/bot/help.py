@@ -10,6 +10,8 @@ from AnonXMusic.utils.decorators.language import LanguageStart, languageCB
 from AnonXMusic.utils.inline.help import help_back_markup, private_help_panel
 from config import BANNED_USERS, START_IMG_URL, SUPPORT_CHAT
 from strings import get_string, helpers
+from AnonXMusic.help.buttons import BUTTONS
+from AnonXMusic.help.helper import Helper
 
 
 @app.on_message(filters.command(["help"]) & filters.private & ~BANNED_USERS)
@@ -88,3 +90,73 @@ async def helper_cb(client, CallbackQuery, _):
         await CallbackQuery.edit_message_text(helpers.HELP_14, reply_markup=keyboard)
     elif cb == "hb15":
         await CallbackQuery.edit_message_text(helpers.HELP_15, reply_markup=keyboard)
+
+
+
+
+
+
+
+#------------------------------------------------------------------------------------------------------------------------
+# MANAGEMENT | MANAGEMENT | MANAGEMENT | MANAGEMENT | MANAGEMENT | MANAGEMENT | MANAGEMENT | MANAGEMENT | MANAGEMENT | 
+#------------------------------------------------------------------------------------------------------------------------
+
+
+@app.on_callback_query(filters.regex("AI_CP") & ~BANNED_USERS)
+async def helper_cb(client, CallbackQuery):
+    await CallbackQuery.edit_message_text(Helper.HELP_A, reply_markup=InlineKeyboardMarkup(BUTTONS.ABUTTON))
+    
+        
+@app.on_callback_query(filters.regex('AI_BACK'))      
+async def mb_plugin_button(client, CallbackQuery):
+    callback_data = CallbackQuery.data.strip()
+    cb = callback_data.split(None, 1)[1]
+    keyboard = InlineKeyboardMarkup(
+    [
+    [
+    InlineKeyboardButton("ʙᴀᴄᴋ", callback_data=f"AI_CP")
+    ]
+    ]
+    )
+    if cb == "AI":
+        await CallbackQuery.edit_message_text(f"`something errors`",reply_markup=keyboard,parse_mode=enums.ParseMode.MARKDOWN)
+    else:
+        await CallbackQuery.edit_message_text(getattr(Helper, cb), reply_markup=keyboard)
+        
+
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+#@app.on_callback_query(filters.regex("Anony_CP") & ~BANNED_USERS)
+#async def helper_cb(client, CallbackQuery):
+#    await CallbackQuery.edit_message_text(Helper.HELP_S, reply_markup=InlineKeyboardMarkup(BUTTONS.SBUTTON))
+#    
+#        
+#@app.on_callback_query(filters.regex('Anony_BACK'))      
+#async def mb_plugin_button(client, CallbackQuery):
+#    callback_data = CallbackQuery.data.strip()
+#    cb = callback_data.split(None, 1)[1]
+#    keyboard = InlineKeyboardMarkup(
+#    [
+#    [
+#    InlineKeyboardButton("ʙᴀᴄᴋ", callback_data=f"Anony_CP")
+#    ]
+#    ]
+#    )
+#    if cb == "Anony":
+#        await CallbackQuery.edit_message_text(f"`something errors`",reply_markup=keyboard,parse_mode=enums.ParseMode.MARKDOWN)
+#    else:
+#        await CallbackQuery.edit_message_text(getattr(Helper, cb), reply_markup=keyboard)
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
