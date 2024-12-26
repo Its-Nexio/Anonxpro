@@ -1,3 +1,4 @@
+import asyncio
 import time
 import random
 from pyrogram import filters
@@ -32,7 +33,12 @@ async def start_pm(client, message: Message, _):
         name = message.text.split(None, 1)[1]
         if name[0:4] == "help":
             keyboard = help_pannel(_)
-            await message.reply_sticker("CAACAgUAAx0CdQO5IgACMTplUFOpwDjf-UC7pqVt9uG659qxWQACfQkAAghYGFVtSkRZ5FZQXDME")
+            sticker_msg = await message.reply_sticker(
+                sticker=random.choice(config.STICKER),  # Random sticker from the list
+            )
+            await asyncio.sleep(0.5)  # the sticker will be deleted after 0.5 seconds
+            await sticker_msg.delete()  # sticker deleted
+
             return await message.reply_photo(
                 photo=random.choice(config.START_IMG_URL),
                 caption=_["help_1"].format(config.SUPPORT_CHAT),
@@ -60,14 +66,14 @@ async def start_pm(client, message: Message, _):
                 channel = result["channel"]["name"]
                 link = result["link"]
                 published = result["publishedTime"]
-            searched_text = _["start_6"].format(
+            searched_text = _["start_7"].format(
                 title, duration, views, published, channellink, channel, app.mention
             )
             key = InlineKeyboardMarkup(
                 [
                     [
-                        InlineKeyboardButton(text=_["S_B_8"], url=link),
                         InlineKeyboardButton(text=_["S_B_9"], url=config.SUPPORT_CHAT),
+                        InlineKeyboardButton(text=_["S_B_8"], url=link),
                     ],
                 ]
             )
@@ -85,12 +91,26 @@ async def start_pm(client, message: Message, _):
                 )
     else:
         out = private_panel(_)
-        await message.reply_sticker("CAACAgUAAx0CdQO5IgACMTplUFOpwDjf-UC7pqVt9uG659qxWQACfQkAAghYGFVtSkRZ5FZQXDME")
+
+        # First start_2 send photo with caption
+        sticker_msg = await message.reply_sticker(
+                sticker=random.choice(config.STICKER),  # Random sticker from the list
+            )
+        await asyncio.sleep(0.5)  # the sticker will be deleted after 0.5 seconds
+        await sticker_msg.delete()  # delete the sticker message
+
         await message.reply_photo(
             photo=random.choice(config.START_IMG_URL),
-            caption=_["start_2"].format(message.from_user.mention, app.mention),
-            reply_markup=InlineKeyboardMarkup(out),
+            caption=_["start_2"].format(message.from_user.mention),  # Pehla caption (start_2)
         )
+
+        # Ab start_3 caption ko reply_markup ke saath bhejo
+        await message.reply_text(
+            text=_["start_3"].format(app.mention),  # Dusra caption (start_3)
+            reply_markup=InlineKeyboardMarkup(out),  # reply_markup ke saath
+        )
+
+        # Agar logging on hai, to message bhejo
         if await is_on_off(2):
             return await app.send_message(
                 chat_id=config.LOGGER_ID,
@@ -124,11 +144,11 @@ async def welcome(client, message: Message):
                     pass
             if member.id == app.id:
                 if message.chat.type != ChatType.SUPERGROUP:
-                    await message.reply_text(_["start_4"])
+                    await message.reply_text(_["start_5"])
                     return await app.leave_chat(message.chat.id)
                 if message.chat.id in await blacklisted_chats():
                     await message.reply_text(
-                        _["start_5"].format(
+                        _["start_6"].format(
                             app.mention,
                             f"https://t.me/{app.username}?start=sudolist",
                             config.SUPPORT_CHAT,
@@ -140,7 +160,7 @@ async def welcome(client, message: Message):
                 out = start_panel(_)
                 await message.reply_photo(
                     photo=random.choice(config.START_IMG_URL),
-                    caption=_["start_3"].format(
+                    caption=_["start_4"].format(
                         message.from_user.first_name,
                         app.mention,
                         message.chat.title,
