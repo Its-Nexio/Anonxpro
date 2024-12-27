@@ -36,9 +36,7 @@ UPSTREAM_REPO = getenv(
     "https://github.com/Its-Nexio/Anonxpro",
 )
 UPSTREAM_BRANCH = getenv("UPSTREAM_BRANCH", "main")
-GIT_TOKEN = getenv(
-    "GIT_TOKEN", None
-)  # Fill this variable if your upstream repository is private
+GIT_TOKEN = getenv("GIT_TOKEN", "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")  # Fill this variable if your upstream repository is private
 
 SUPPORT_CHANNEL = getenv("SUPPORT_CHANNEL", "https://t.me/SANATANI_TECH")
 SUPPORT_CHAT = getenv("SUPPORT_CHAT", "https://t.me/SANATANI_SUPPORT")
