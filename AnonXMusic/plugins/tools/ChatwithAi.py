@@ -1,57 +1,55 @@
 from pyrogram import Client, filters
 from pyrogram.types import Message
-from pyrogram.enums import ChatAction
-import requests
+import openai
 import asyncio
-from config import *  # Assuming sensitive info like API keys and configurations are imported here
-from database import *  # Assuming database functions (like FSUB, get_fsub) are defined here
 
-BASE_URL = "https://chatwithai.codesearch.workers.dev/?chat="
+OPENAI_API_KEY = "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"  # Replace with your OpenAI API Key
 
-def ask_query(query: str) -> str:
-    try:
-        # Send GET request to the API
-        response = requests.get(f"{BASE_URL}{query}")
-        response.raise_for_status()
-        # Parse JSON response
-        data = response.json()  # Convert the response to a JSON object
-        # Extract and return the "data" field if present
-        return data.get("data", "⚠️ Error: Unexpected response format")
-    except requests.exceptions.RequestException as e:
-        return f"⚠️ Error: {str(e)}"
-    except json.JSONDecodeError:
-        return "⚠️ Error: Failed to decode the response from the server."
+openai.api_key = OPENAI_API_KEY
 
-async def send_typing_action(client: Client, chat_id: int, duration: int = 1):
-    await client.send_chat_action(chat_id, ChatAction.TYPING)
+# Initialize Pyrogram client
+app = Client("chatgpt_bot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
+
+# Simulate typing action
+async def send_typing_action(client, chat_id, duration=1):
+    await client.send_chat_action(chat_id, "typing")
     await asyncio.sleep(duration)
 
-@Client.on_message(filters.command("ask"))
-async def ask_query_command(client: Client, message: Message):
-    if FSUB and not await get_fsub(client, message):
-        return
-    query = message.text.split(" ", 1)
-    if len(query) > 1:
-        await send_typing_action(client, message.chat.id)
-        reply = ask_query(query[1])
-        await message.reply_text(f"{message.from_user.mention}, {reply} 🚀")
-    else:
-        await message.reply_text("📝 Please provide a query to ask GPT-4. Don't be shy, let's chat! 🤖💬.")
+# Function to process user query with ChatGPT
+async def ask_gpt(query):
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-4",  # You can use "gpt-3.5-turbo" if GPT-4 is unavailable
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": query}
+            ],
+            max_tokens=200,
+        )
+        return response['choices'][0]['message']['content'].strip()
+    except Exception as e:
+        return f"Error: {e}"
 
-@Client.on_message(filters.mentioned & filters.group)
-async def handle_mention(client: Client, message: Message):
-    if FSUB and not await get_fsub(client, message):
+# Command handler for "/ask"
+@app.on_message(filters.command("ask", prefixes=["/", ".", "!"]))
+async def handle_query(client: Client, message: Message):
+    if len(message.command) < 2:
+        await message.reply_text("<b>Please provide a query after the command.</b>")
         return
-    user_text = (
-        message.reply_to_message.text.strip()
-        if message.reply_to_message
-        else message.text.split(" ", 1)[1].strip()
-        if len(message.text.split(" ", 1)) > 1
-        else ""
-    )
-    if user_text:
-        await send_typing_action(client, message.chat.id)
-        reply = ask_query(user_text)
-        await message.reply_text(f"{message.from_user.mention}, {reply} 🚀")
-    else:
-        await message.reply("👋 Please ask a question after mentioning me! I’m here to help! 😊")
+
+    user_query = message.text.split(maxsplit=1)[1]
+    user_mention = message.from_user.mention
+
+    # Simulate typing
+    await send_typing_action(client, message.chat.id, duration=2)
+
+    # Get response from ChatGPT
+    response = await ask_gpt(user_query)
+
+    # Send the response back to the user
+    await message.reply_text(f"{user_mention}, <b>{response}</b>")
+
+# Start the bot
+if __name__ == "__main__":
+    print("ChatGPT Bot is running...")
+    app.run()
