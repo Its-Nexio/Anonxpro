@@ -6,7 +6,7 @@ from pyrogram.enums import ChatAction, ParseMode
 from gtts import gTTS
 import requests, config
 
-openai.api_key = "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"
+openai.api_key = "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"
 
 @app.on_message(filters.command(["chatgpt","ai","ask"], prefixes=["+", ".", "/", "-", "?", "$","#","&"]))
 async def chat(app: app, message):
