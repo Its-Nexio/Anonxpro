@@ -15,7 +15,7 @@ def ask_query(query, model=None):
         query = f"{system_prompt}\n\nᴜsᴇʀ: {query}"
 
     encoded_query = urllib.parse.quote(query)
-    url = f"https://darkness.ashlynn.workers.dev/chat/?prompt=${encodeURIComponent(prompt)}&model=meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo"
+    url = f"https://darkness.ashlynn.workers.dev/chat/?prompt={encoded_prompt}"
 
     response = requests.get(url)
 
