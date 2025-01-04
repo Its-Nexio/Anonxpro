@@ -3,8 +3,8 @@ from pyrogram.types import Message
 from pyrogram.enums import ChatAction
 import requests
 import asyncio
-#from info import *  # Assuming sensitive info like API keys and configurations are imported here
-#from database import *  # Assuming database functions (like FSUB, get_fsub) are defined here
+from config import *  # Assuming sensitive info like API keys and configurations are imported here
+from database import *  # Assuming database functions (like FSUB, get_fsub) are defined here
 
 BASE_URL = "https://chatwithai.codesearch.workers.dev/?chat="
 
