@@ -3,8 +3,8 @@ from AnonXMusic import app
 from pyrogram.types import Message
 from pyrogram.enums import ChatAction, ParseMode
 from pyrogram import filters
-from config import API_KEY
 
+API_KEY = "abc921ff654bcf7b3faff8f775d781d8d27d32bfd02d6692eea30249ba781c8b"
 BASE_URL = "https://api.together.xyz/v1/chat/completions"
 
 @app.on_message(
@@ -15,40 +15,30 @@ BASE_URL = "https://api.together.xyz/v1/chat/completions"
 )
 async def chat_gpt(bot, message):
     try:
-        # Typing action when the bot is processing the message
         await bot.send_chat_action(message.chat.id, ChatAction.TYPING)
 
         if len(message.command) < 2:
-            # If no question is asked, send an example message
             await message.reply_text(
                 "❍ ᴇxᴀᴍᴘʟᴇ:**\n\n/chatgpt ᴡʜᴏ ɪs ᴛʜᴇ ᴏᴡɴᴇʀ ᴏғ ˹ ʙʙʏ-ᴍᴜsɪᴄ ™˼𓅂?"
             )
         else:
-            # Extract the query from the user's message
             query = message.text.split(' ', 1)[1]
-            print("Input query:", query)  # Debug input
-
-            # Set up headers with Authorization and Content-Type
+            print("Input query:", query)
             headers = {
                 "Authorization": f"Bearer {API_KEY}",
                 "Content-Type": "application/json"
             }
-
-            # Prepare the payload with the correct model and user message
             payload = {
-                "model": "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",  # Change model if needed
+                "model": "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
                 "messages": [
                     {
                         "role": "user",
-                        "content": query  # User's question from the message
+                        "content": query
                     }
                 ]
             }
-
-            # Send the POST request to the API
             response = requests.post(BASE_URL, json=payload, headers=headers)
 
-            # Debugging: print raw response
             print("API Response Text:", response.text)  # Print raw response
             print("Status Code:", response.status_code)  # Check the status code
 
