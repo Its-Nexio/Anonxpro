@@ -1,26 +1,29 @@
-import os, time
-import openai
+import requests
 from AnonXMusic import app
-from pyrogram import filters
+from pyrogram import Client, filters
 from pyrogram.enums import ChatAction, ParseMode
-from gtts import gTTS
-import requests, config
 
-openai.api_key = "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"
+@app.on_message(filters.command("ask"))
+async def fetch_med_info(client, message):
+    query = " ".join(message.command[1:])  # Extract the query after the command
+    if not query:
+        await message.reply_text("Please provide a medical query to ask.")
+        return
 
-@app.on_message(filters.command(["chatgpt","ai","ask"], prefixes=["+", ".", "/", "-", "?", "$","#","&"]))
-async def chat(app: app, message):
+    # Send typing action to indicate bot is working
+    await client.send_chat_action(chat_id=message.chat.id, action=ChatAction.TYPING)
+
+    # Use the API to get medical data
+    api_url = f"https://chatwithai.codesearch.workers.dev/?question={query}"
     try:
-        start_time = time.time()
-        await app.send_chat_action(message.chat.id, ChatAction.TYPING)
-        if len(message.command) < 2:
-            await message.reply_text("Hello! Please provide a question or message for the AI to respond to.")
+        response = requests.get(api_url)
+        if response.status_code == 200:
+            data = response.json()
+            reply = data.get("data", "Sorry, I couldn't fetch the data.")
         else:
-            question = message.text.split(' ', 1)[1]
-            MODEL = "gpt-3.5-turbo"
-            resp = openai.ChatCompletion.create(model=MODEL, messages=[{"role": "user", "content": question}], temperature=0.2)
-            response_text = resp['choices'][0]["message"]["content"]
-            await message.reply_text(response_text)
-
+            reply = "Failed to fetch data from the API."
     except Exception as e:
-        await message.reply_text(f"Error: {e}")
+        reply = f"An error occurred: {e}"
+
+    # Reply to the user
+    await message.reply_text(reply)
