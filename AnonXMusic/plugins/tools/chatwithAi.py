@@ -14,7 +14,7 @@ async def fetch_med_info(client, message):
     await client.send_chat_action(chat_id=message.chat.id, action=ChatAction.TYPING)
 
     # Use the API to get medical data
-    api_url = f"https://chatwithai.codesearch.workers.dev/?question={query}"
+    api_url = f"https://chatwithai.codesearch.workers.dev/?chat={query}"
     try:
         response = requests.get(api_url)
         if response.status_code == 200:
