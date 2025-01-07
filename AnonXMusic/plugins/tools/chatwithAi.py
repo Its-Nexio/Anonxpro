@@ -3,7 +3,7 @@ from AnonXMusic import app
 from pyrogram import Client, filters
 from pyrogram.enums import ChatAction, ParseMode
 
-@app.on_message(filters.command("ask"))
+@app.on_message(filters.command("ask", "sachin"))
 async def fetch_med_info(client, message):
     query = " ".join(message.command[1:])  # Extract the query after the command
     if not query:
