@@ -47,8 +47,6 @@ youtube-search
 youtube-search-python
 gtts
 git+https://github.com/AsmSafone/SafoneAPI
-git+https://github.com/Vivekkumar-IN/TheApi@main
-git+https://github.com/SEX-SUX/TheApi@main
 lexica-api==1.5.4
 httpx[http2]
 gpytranslate
