@@ -2,7 +2,7 @@ import asyncio
 import time
 import random
 from pyrogram import filters
-from pyrogram.enums import ChatType
+from pyrogram.enums import ChatType, ParseMode
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 from youtubesearchpython.__future__ import VideosSearch
 
@@ -126,7 +126,8 @@ async def start_pm(client, message: Message, _):
 
         # Ab start_3 caption ko reply_markup ke saath bhejo
         await message.reply_text(
-            text=_["start_3"].format(app.mention),  # Dusra caption (start_3)
+            text=_["start_3"].format(app.mention),
+            parse_mode=ParseMode.MARKDOWN, # Dusra caption (start_3)
             reply_markup=InlineKeyboardMarkup(out),  # reply_markup ke saath
         )
 
