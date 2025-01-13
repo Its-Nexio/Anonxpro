@@ -121,15 +121,9 @@ async def start_pm(client, message: Message, _):
 
         await message.reply_photo(
             photo=random.choice(START_IMG_URL),
-            caption=_["start_2"].format(message.from_user.mention),  # Pehla caption (start_2)
-        )
-
-        # Ab start_3 caption ko reply_markup ke saath bhejo
-        await message.reply_text(
-            text=_["start_3"].format(app.mention),
-            parse_mode=ParseMode.MARKDOWN, # Dusra caption (start_3)
-            reply_markup=InlineKeyboardMarkup(out),  # reply_markup ke saath
-        )
+            caption=_["start_2"].format(message.from_user.mention), parse_mode=ParseMode.HTML,
+            
+        await message.reply_text(text=_["start_3"].format(app.mention), parse_mode=ParseMode.HTML, reply_markup=InlineKeyboardMarkup(out),)
 
         # Agar logging on hai, to message bhejo
         if await is_on_off(2):
