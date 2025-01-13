@@ -121,7 +121,7 @@ async def start_pm(client, message: Message, _):
 
         await message.reply_photo(
             photo=random.choice(START_IMG_URL),
-            caption=_["start_2"].format(message.from_user.mention), parse_mode=ParseMode.HTML,
+            caption=_["start_2"].format(message.from_user.mention), parse_mode=ParseMode.HTML,)
             
         await message.reply_text(text=_["start_3"].format(app.mention), parse_mode=ParseMode.HTML, reply_markup=InlineKeyboardMarkup(out),)
 
