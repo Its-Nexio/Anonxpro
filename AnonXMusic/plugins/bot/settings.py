@@ -1,4 +1,8 @@
+import config
 from pyrogram import filters
+from time import time, strftime, gmtime
+from pyrogram import __version__ as pver
+from pyrogram.types import InputMediaVideo, InputMediaPhoto
 from pyrogram.enums import ChatType
 from pyrogram.errors import MessageNotModified
 from pyrogram.types import (
@@ -8,8 +12,8 @@ from pyrogram.types import (
     Message,
 )
 
-from AnonXMusic import app
-from AnonXMusic.utils.database import (
+from Spy import app
+from Spy.utils.database import (
     add_nonadmin_chat,
     get_authuser,
     get_authuser_names,
@@ -25,15 +29,15 @@ from AnonXMusic.utils.database import (
     skip_off,
     skip_on,
 )
-from AnonXMusic.utils.decorators.admins import ActualAdminCB
-from AnonXMusic.utils.decorators.language import language, languageCB
-from AnonXMusic.utils.inline.settings import (
+from Spy.utils.decorators.admins import ActualAdminCB
+from Spy.utils.decorators.language import language, languageCB
+from Spy.utils.inline.settings import (
     auth_users_markup,
     playmode_users_markup,
     setting_markup,
     vote_mode_markup,
 )
-from AnonXMusic.utils.inline.start import private_panel
+from Spy.utils.inline.start import private_panel
 from config import BANNED_USERS, OWNER_ID
 
 
@@ -78,8 +82,12 @@ async def settings_back_markup(client, CallbackQuery: CallbackQuery, _):
         await app.resolve_peer(OWNER_ID)
         OWNER = OWNER_ID
         buttons = private_panel(_)
-        return await CallbackQuery.edit_message_text(
-            _["start_3"].format(CallbackQuery.from_user.mention, app.mention),
+        return await CallbackQuery.edit_message_media(
+            InputMediaPhoto(
+                media=config.START_IMG_URL,
+                caption=_["start_2"].format(
+                    CallbackQuery.from_user.mention, app.mention),
+            ),
             reply_markup=InlineKeyboardMarkup(buttons),
         )
     else:
@@ -88,6 +96,62 @@ async def settings_back_markup(client, CallbackQuery: CallbackQuery, _):
             reply_markup=InlineKeyboardMarkup(buttons)
         )
 
+
+@app.on_callback_query(filters.regex("gib_source"))
+async def gib_repo_callback(_, callback_query):
+    await callback_query.edit_message_media(
+        media=InputMediaVideo(
+            "https://files.catbox.moe/46fbmr.mp4", 
+            has_spoiler=True, 
+            caption="ʟᴜɴᴅ ʟᴇʟᴇ ᴍᴇʀᴀ ʀᴇᴘᴏ ᴋʏᴀ ᴋᴀʀᴇɢᴀ, ʟᴇɢᴀ ᴋʏᴀ ʙʜᴏsᴀᴅɪᴋᴇ"
+        ),
+        reply_markup=InlineKeyboardMarkup(
+            [
+            [
+                    InlineKeyboardButton(text="★️𝆺𝅥⃝🦋 ‌⃪‌ 𝜹𝝄ᷟ𝜼ᷢ𝛌ᷤ𝜄𝒊𝆺𝅥ﮩ٨ـ🖤", user_id=config.OWNER_ID)
+             ],
+             [
+                    InlineKeyboardButton(text="• ʙᴀᴄᴋ •", callback_data="settingsback_helper"),
+                    InlineKeyboardButton(text="• ᴄʟᴏsᴇ •", callback_data="close")
+             ]
+            ]
+        ),
+    )
+
+@app.on_callback_query(filters.regex("^bot_info_data$"))
+async def show_bot_info(c: app, q: CallbackQuery):
+    start = time()
+    x = await c.send_message(q.message.chat.id, "Pinging..")
+    delta_ping = time() - start
+    await x.delete()
+    txt = f"""🏓 Pɪɴɢ: {delta_ping * 1000:.3f} ms   
+🐍 Pʏᴛʜᴏɴ Vᴇʀsɪᴏɴ: 3.10.4
+🔥 Pʏʀᴏɢʀᴀᴍ Vᴇʀsɪᴏɴ: {pver}
+    """
+    await q.answer(txt, show_alert=True)
+    return
+
+@app.on_callback_query(filters.regex("dil_spy") & ~BANNED_USERS)
+@languageCB
+async def support(client, CallbackQuery, _):
+    await CallbackQuery.edit_message_text(
+        text="❖ ᴄʟɪᴄᴋ ᴏɴ ᴛʜᴇ ʙᴜᴛᴛᴏɴ ᴛᴏ ɢᴇᴛ ᴍᴏʀᴇ ᴀʙᴏᴜᴛ ᴍᴇ\n\n❍ ɪғ ʏᴏᴜ ғɪɴᴅ ᴀɴʏ ᴇʀʀᴏʀ ᴏʀ ʙᴜɢ ᴏɴ ʙᴏᴛ ᴏʀ ᴡᴀɴᴛ ᴛᴏ ɢɪᴠᴇ ᴀɴʏ ғᴇᴇᴅʙᴀᴄᴋ ᴀʙᴏᴜᴛ ᴛʜᴇ ʙᴏᴛ ᴛʜᴇɴ ʏᴏᴜ ᴀʀᴇ ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ sᴜᴘᴘᴏʀᴛ ᴄʜᴀᴛ",
+        reply_markup=InlineKeyboardMarkup(
+            [
+                [
+                    InlineKeyboardButton(text="★️𝆺𝅥⃝🦋 ‌⃪‌ 𝜹𝝄ᷟ𝜼ᷢ𝛌ᷤ𝜄𝒊𝆺𝅥ﮩ٨ـ🖤", user_id=config.OWNER_ID)       
+                ],
+                [
+                    InlineKeyboardButton(text="sᴜᴘᴘᴏʀᴛ", url=config.SUPPORT_CHAT),
+                    InlineKeyboardButton(text="ᴄʜᴀɴɴᴇʟ", url=config.SUPPORT_CHANNEL),
+
+                ],
+                [
+                    InlineKeyboardButton(text="ʙᴀᴄᴋ", callback_data=f"settingsback_helper")
+                ],
+            ]
+        ),
+    )
 
 @app.on_callback_query(
     filters.regex(
